@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+// Colors
+@import "components/color";
+
+// Variables;
+@import "components/variables";
+
+*[disabled]:not([disabled="false"]) {cursor: not-allowed}
+
+
+html, body {height: 100%}
+
+a {cursor: pointer}
+
+span.badge {min-width: 0}
+
+.clearfix:after {
+	content: "";
+	display: table;
+	clear: both;
+}

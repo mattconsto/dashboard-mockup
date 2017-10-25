@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sensivision</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<link rel="stylesheet" href="stylesheets/materialize.css"	media="screen,projection"/>
+		<link rel="stylesheet" href="stylesheets/overrides.css"	media="screen,projection"/>
+		<link rel="stylesheet" href="stylesheets/material-icons.css"/>
+		<link rel="stylesheet" href="stylesheets/font-awesome.min.css"/>
+		<style>
+			body {
+				overflow-x: hidden;
+			}
+
+			.fa {font-size: 24px;}
+
+			.droppable.active { background: #CFC; }
+			.droppable.hovered { background: #CCF; }
+
+			#fix {
+				overflow: hidden;
+				margin-left: 10px;
+				margin-right: 10px;
+			}
+
+			#fix canvas {
+				margin-left: -50px;
+				width: calc(100% + 50px) !important;
+			}
+
+			.sortable-placeholder {
+				height: 100px;
+				background: rgba(0, 0, 0, 0.14);
+			}
+
+			/*.list > *:not(.new) {
+				border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+			}*/
+
+			.list > .new {
+				background: rgba(0, 0, 0, 0.14);
+			}
+
+			.list > *:not(.new) > * {
+				border-right: 0.25em solid rgba(0, 0, 0, 0.14);
+			}
+
+			.list > *:not(.new) > *:last-child {
+				border-right: none;
+			}
+
+			.card-panel-hover {
+				transition: box-shadow,border .25s;
+				padding: 12px;
+				box-shadow: none;
+				border-radius: 2px;
+			}
+
+			.card-panel-hover > * {
+				margin: 0 12px;
+			}
+
+			.card-panel-hover:hover {
+				box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);
+				border: none;
+				background: white;
+			}
+
+			.connectedSortable {
+				min-height: 1em;
+				display: flex;
+				flex-direction: row;
+			}
+			.connectedSortable > * {
+				flex-grow: 1;
+				flex: 1;
+			}
+			.connectedSortable.new {
+			}
+		</style>
+
+		<script id="om2m-trendline" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="{{icon}}" aria-hidden="true"></i>
+				<div style="flex-grow: 1; height: 100%;" id="fix"><canvas></canvas></div>
+				<span class="value">0{{unit}}</span>
+			</div>
+		</script>
+
+		<script id="om2m-matrix" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="material-icons" aria-hidden="true">text_fields</i>
+				<div class="input-field" style="flex-grow: 1;">
+					<input placeholder="Text" id="text_input" type="text"/>
+				</div>
+				<a class="waves-effect waves-light btn">Scroll</a>
+				<a class="waves-effect waves-light btn">Blink</a>
+			</div>
+		</script>
+
+		<script id="om2m-number" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="fa fa-percent" aria-hidden="true"></i>
+				<p class="range-field" style="flex-grow: 1;">
+					<input type="range" id="test5" min="0" max="100" />
+				</p>
+				<a class="waves-effect waves-light btn">Display</a>
+			</div>
+		</script>
+
+		<script id="om2m-compass" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="fa fa-compass" aria-hidden="true"></i>
+				<div style="flex-grow: 1; height: 100%;" id="fix"><canvas></canvas></div>
+				<span class="value">0°</span>
+				<a class="waves-effect waves-light btn">Switch</a>
+			</div>
+		</script>
+
+		<script id="om2m-color" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="material-icons" aria-hidden="true">color_lens</i>
+			</div>
+		</script>
+
+		<script id="om2m-time" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="material-icons" aria-hidden="true">access_time</i>
+			</div>
+		</script>
+
+		<script id="om2m-gyro" class="auto-component" type="text/ractive">
+			<div class="card-panel-hover" style="display: flex; height: 100px; align-items: center;">
+				<i class="material-icons" aria-hidden="true">3d_rotation</i>
+			</div>
+		</script>
+
+		<script id="om2m-gateway" class="auto-component" type="text/ractive">
+			<div id="gateway{{@index}}">
+				<h3>{{name}} <a class='dropdown-button right' href='#' data-activates='dropdown1'><i class="material-icons" aria-hidden="true">more_vert</i></a></h3>
+				<div class="list">
+					{{#each sensors}}
+						<div class="connectedSortable new"></div>
+						<div class="connectedSortable">
+							{{#each this}}
+								<om2m-trendline name="{{name}}" icon="{{icon}}" unit="{{unit}}"/>
+							{{/each}}
+							<!-- <om2m-compass /> -->
+							<!-- <om2m-color /> -->
+							<!-- <om2m-time /> -->
+							<!-- <om2m-gyro /> -->
+						</div>
+					{{/each}}
+					<div class="connectedSortable new"></div>
+					<div class="connectedSortable">
+						<om2m-matrix />
+						<om2m-number />
+					</div>
+					<div class="connectedSortable new"></div>
+					<div class="connectedSortable new hide"></div>
+				</div>
+				<br />
+				</div>
+		</script>
+
+		<script id="om2m-dashboard" class="auto-component" type="text/ractive">
+			<br />
+			{{#each gateways}}
+				<om2m-gateway />
+			{{/each}}
+		</script>
+	</head>
+
+	<body>
+		<div style="height: 100%; display: flex; flex-direction: column;">
+			<div style="flex: 1 0 auto; display: flex; flex-direction: column;">
+				<header>
+					<nav>
+						<div class="nav-wrapper container">
+							<a href="#!" class="brand-logo"><i class="material-icons">cloud</i>Sensivision</a>
+							<ul class="right hide-on-med-and-down">
+								<li><a href="#!"><i class="material-icons">search</i></a></li>
+								<li><a href="#!"><i class="material-icons">view_module</i></a></li>
+								<li><a href="#!"><i class="material-icons">refresh</i></a></li>
+								<li><a href="#!"><i class="material-icons">more_vert</i></a></li>
+							</ul>
+						</div>
+					</nav>
+				</header>
+				
+				<div class="container" id="target">
+					<p>JavaScript is required to view this page.</p>
+				</div>
+
+				<ul id='dropdown1' class='dropdown-content'>
+					<li><a href="#!">one</a></li>
+					<li><a href="#!">two</a></li>
+					<li class="divider"></li>
+					<li><a href="#!">three</a></li>
+					<li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+					<li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+				</ul>
+			</div>
+			
+			<footer class="page-footer">
+				<div class="container">
+					<div class="row">
+						<div class="col l6 s12">
+							<h5 class="white-text">Sensivision</h5>
+							<p class="grey-text text-lighten-4">Group 30 Development Project</p>
+						</div>
+						<div class="col l4 offset-l2 s12">
+							<h5 class="white-text">Team</h5>
+							<ul>
+								<li class="grey-text text-lighten-3">Altay Adademir</li>
+								<li class="grey-text text-lighten-3">Matthew Consterdine</li>
+								<li class="grey-text text-lighten-3">Edmond Ipindamitan</li>
+								<li class="grey-text text-lighten-3">Dennis Parchkov</li>
+								<li class="grey-text text-lighten-3">Adib Pournazari Dezfouli</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="footer-copyright">
+					<div class="container">
+					A work in progress
+					<a class="grey-text text-lighten-4 right" href="http://github.com/mattconsto/gdp2">Github</a>
+					</div>
+				</div>
+			</footer>
+		</div>
+		
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script src="js/jquery-ui.js"></script>
+		<script src="js/jquery.ui.touch-punch.min.js"></script>
+		<script src="js/ractive.min.js"></script>
+		<script src="js/materialize.min.js"></script>
+		<script src="js/Chart.min.js"></script>
+		<script src="js/application.js"></script>
+	</body>
+</html>
